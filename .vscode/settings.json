@@ -1,0 +1,4 @@
+{
+    "dotnet.defaultSolution": "mad1_quiz_app.sln",
+    "cmake.sourceDirectory": "C:/mad1/mad_widgets/linux"
+}
