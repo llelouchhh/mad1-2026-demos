@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("dark_mode")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d58e1aa46acb96d8b811ad1fe9c92f26cee4f338")]
 [assembly: System.Reflection.AssemblyProductAttribute("dark_mode")]
 [assembly: System.Reflection.AssemblyTitleAttribute("dark_mode")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
