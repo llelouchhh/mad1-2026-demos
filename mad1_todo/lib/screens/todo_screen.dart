@@ -11,14 +11,20 @@ class _TodoScreenState extends State<TodoScreen> {
   var itemCtrl = TextEditingController();
   List<String> items = [];
 
-  void addItem(){
+  void addItem() {
     setState(() {
-      if(itemCtrl.text != ""){
-        items.add(itemCtrl.text);
-      }
+      if (itemCtrl.text != "") items.add(itemCtrl.text);
       print(items);
     });
   }
+
+  void undoDeletion(String item){
+    items.add(item);
+    setState(() {
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,46 +35,111 @@ class _TodoScreenState extends State<TodoScreen> {
             crossAxisAlignment: .stretch,
             children: [
               TextField(
-                
                 controller: itemCtrl,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    label: Text('Todo Item')
+                  border: OutlineInputBorder(),
+                  label: Text('Todo Item'),
                 ),
               ),
-              ElevatedButton(
-                onPressed: (){
-                  addItem();
-                }, 
-                child: 
-                Text('ADD')),
-                Expanded(
-                  child: ListView.builder(
+              ElevatedButton(onPressed: addItem, child: Text('ADD')),
+              Expanded(
+                // child: SingleChildScrollView(
+                //   child: Column(
+                //     crossAxisAlignment: .stretch,
+                //     children: items.map((item) {
+                //       return Card(child: Text(item));
+                //     }).toList(), //map items List<String> -> List<Widget>
+                //   ),
+                // ),
+                // child: ListView(
+                //   //singlechildscrollview + col/row
+                //   children: [
+                //     //items
+                //   ],
+                // ),
+                child: ListView.builder(
                   // scrollDirection: .horizontal,
                   itemCount: items.length,
-                  itemBuilder: (_, index){
-                    return ListTile(
-                      title: Text(items[index]),
-                      subtitle: Text('Sub'),
-                      trailing: Icon(Icons.delete),
-                      leading: Icon(Icons.check),
-                      );
-                    }
-                  ),
-                  // child: SingleChildScrollView(
-                  //   child: Column(
-                  //     crossAxisAlignment: .stretch,
-                  //     children: 
-                  //       items.map((item){
-                  //         return Card(child: Text(item));
-                  //       }).toList(),
-                  //   ),
-                  // ) ,
-                )
+                  itemBuilder: (_, index) {
+                    // return Card(child: Text(items[index]));
+                    return Dismissible(
+                      key: UniqueKey(),
+                      background: Container(color: Colors.red),
+                      secondaryBackground: Container(
+                        padding: .only(right: 18),
+                        color: Colors.blue,
+                        alignment: .centerEnd,
+                        child: Icon(Icons.delete, color: Colors.red),
+                      ),
+                      direction: .endToStart,
+                      onDismissed: (direction) {
+                        // if(direction == DismissDirection.endToStart)
+                        String item = items.removeAt(index);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Item deleted.'),
+                            action: SnackBarAction(
+                              label: 'UNDO',
+                              onPressed: () {
+                                items.insert(index, item);
+                                setState(() {
+                                  
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                        
+                      },
+                      confirmDismiss: (direction) async {
+                        // if(direction == DismissDirection.endToStart)
+                        final result = await showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            content: Text('Do you want to delete this item?'),
+                            title: Text('Confirm to delete'),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop('yes');
+                                },
+                                child: Text('YES'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                            ],
+                          ),
+                        );
+                        print(result);
+                        if (result == null) return false;
+                        return true;
+                      },
+                      child: Card(
+                        child: ListTile(
+                          title: Text(items[index]),
+                          subtitle: Text('Sub'),
+                          // trailing: IconButton(
+                          //   onPressed: () {
+                          //     items.removeAt(index);
+                          //     setState(() {});
+                          //   },
+                          //   icon: Icon(Icons.delete),
+                          // ),
+                          leading: Icon(Icons.check),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
-}                                
+}
